@@ -3,7 +3,7 @@ A project that helps to use Python in STEM projects easily. The project is based
 
 == Installation
 	
-python setup.py install
+pip install PyBoard
 
 == Usage
  

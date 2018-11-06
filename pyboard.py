@@ -641,23 +641,6 @@ class PyBoard(Constants):
         task = asyncio.ensure_future(self.core.shutdown())
         self.loop.run_until_complete(task)
 
-    def getDataFromSonar(self, trigger_pin):
-        """
-        Retrieve Ping (HC-SR04 type) data. The data is presented as a
-        dictionary.
-        The 'key' is the trigger pin specified in sonar_config() and the
-        'data' is the current measured distance (in centimeters)
-        for that pin. If there is no data, the value is set to None.
-        This is a FirmataPlus feature.
-
-        :param trigger_pin: trigger pin specified in sonar_config
-
-        :returns: active_sonar_map
-        """
-        task = asyncio.ensure_future(self.core.sonar_data_retrieve(trigger_pin))
-        sonar_data = self.loop.run_until_complete(task)
-        return sonar_data
-
     # noinspection PyUnusedLocal
     def configSonar(self, trigger_pin, echo_pin, cb=None, ping_interval=50,
                      max_distance=200, cb_type=None):
@@ -693,6 +676,28 @@ class PyBoard(Constants):
                                                             ping_interval,
                                                             max_distance, cb_type))
         self.loop.run_until_complete(task)
+
+    def getDataFromSonar(self, trigger_pin, waitTime = 500):
+        """
+        Retrieve Ping (HC-SR04 type) data. The data is presented as a
+        dictionary.
+        The 'key' is the trigger pin specified in sonar_config() and the
+        'data' is the current measured distance (in centimeters)
+        for that pin. If there is no data, the value is set to None.
+        This is a FirmataPlus feature.
+
+        :param trigger_pin: trigger pin specified in sonar_config
+
+        :returns: active_sonar_map
+        """
+        task = asyncio.ensure_future(self.core.ping_read(trigger_pin))
+        self.loop.run_until_complete(task)
+        if(waitTime < 200):
+        	waitTime = 200
+        self.delay(waitTime)
+        task = asyncio.ensure_future(self.core.ping_data_retrieve(trigger_pin))
+        sonar_data = self.loop.run_until_complete(task)
+        return sonar_data
 
     def configStepper(self, steps_per_revolution, stepper_pins):
         """
@@ -815,7 +820,7 @@ class PyBoard(Constants):
         task = asyncio.ensure_future(self.core.dht_read(pin))
         self.loop.run_until_complete(task)
 
-    def getDataFromDHT(self, pin, waitTime=0.5):
+    def getDataFromDHT(self, pin, waitTime=500):
         """
         Read the value from a DHT device.
         This is an extended firmata feature.
@@ -825,7 +830,9 @@ class PyBoard(Constants):
         :returns: No return value
 
         """        
-        self.sleep(waitTime)
+        if(waitTime < 100):
+        	waitTime = 100
+        self.delay(waitTime)
         task = asyncio.ensure_future(self.core.dht_data_retrieve(pin))
         dhtdata = self.loop.run_until_complete(task)
         return dhtdata

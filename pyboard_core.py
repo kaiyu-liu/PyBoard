@@ -48,12 +48,13 @@ class PyBoardCore(PymataCore):
                  ip_address=None, ip_port=2000,
                  ip_handshake='*HELLO*'):
         PymataCore.__init__(self, arduino_wait, sleep_tune, log_output, com_port, ip_address, ip_port,ip_handshake)
-        self.command_dictionary[BoardConstants.DHT11_DATA] = self._dht_data
 
         # report query results are stored in this dictionary
         self.query_reply_data[BoardConstants.DHT11_DATA] = None
         self.command_dictionary[BoardConstants.DHT11_DATA] = self._dht_data
+        self.command_dictionary[BoardConstants.PING_DATA] = self._ping_data
         self.dht_map = {}
+        self.ping_map = {}
 
     async def neopixel_config(self, pin, count=12, brightness=64):
         """
@@ -128,22 +129,16 @@ class PyBoardCore(PymataCore):
 
     async def dht_data_retrieve(self, datapin):
         """
-        Retrieve Ping (DHT) data. The data is presented as a
+        Retrieve DHT11 data. The data is presented as a
         dictionary.
         The 'key' is the data pin specified in dht11_config()
         and the 'data' is [status, temperature, humidity, temperatureDecimal, humidityDecimal ].
 
         :param trigger_pin: key into sonar data map
 
-        :returns: active_sonar_map
+        :returns: dht_map
         """
-        # sonar_pin_entry = self.active_sonar_map[pin]
-
         dht_pin_entry = self.dht_map[datapin]
- 
-        # self.dht_map[pin_number] = dht_pin_entry
-        # self.query_reply_data[BoardConstants.ANALOG_MAPPING_RESPONSE] = dht_pin_entry
-        # value = self.dht_map[datapin];
 
         result = dht_pin_entry[0]
 		        
@@ -162,9 +157,6 @@ class PyBoardCore(PymataCore):
         result = data[1]
         if(result > 128):
            result -= 255
-        t = data[2] #int((data[3] << 7) + data[2])
-        h = data[3] #int((data[5] << 7) + data[4])
-        # print("dht...",pin_number, result, t, h)
         reply_data = []
         dht_pin_entry = self.dht_map[pin_number]
         dht_pin_entry[0] = result
@@ -174,3 +166,44 @@ class PyBoardCore(PymataCore):
         dht_pin_entry[4] = data[5]
         self.dht_map[pin_number] = dht_pin_entry
         await asyncio.sleep(self.sleep_tune)
+
+    async def ping_read(self, triggerPin):
+        """
+		:param triggerPin: pin number of the sonar trigger pin
+        :returns: No return value.
+        """
+        data = [triggerPin & 0x7F]
+        self.ping_map[triggerPin] = -1
+        await self._send_sysex(BoardConstants.PING_READ, data)
+
+    async def _ping_data(self, data):
+        """
+        This method handles the incoming sonar data message and stores
+        the data in the response table.
+
+        :param data: Message data from Firmata
+
+        :returns: No return value.
+        """
+
+        # strip off sysex start and end
+        data = data[1:-1]
+        pin_number = data[0]
+        val = int((data[2] << 7) + data[1])
+        #ping_pin_entry = self.ping_map[pin_number]
+        #ping_pin_entry[1] = val
+        self.ping_map[pin_number] = val
+        await asyncio.sleep(self.sleep_tune)
+
+    async def ping_data_retrieve(self, datapin):
+        """
+        Retrieve sonar data. The data is presented as a dictionary.
+        The 'key' is the data pin specified in sonar_config()
+        and the 'data' is [pin, distance].
+
+        :param trigger_pin: key into sonar data map
+
+        :returns: ping_map
+        """
+        ping_pin_entry = self.ping_map[datapin]
+        return ping_pin_entry

@@ -4,7 +4,7 @@ import sys
 
 setup(
     name="PyBoard",
-    version="1.0.0",
+    version="1.1.1",
     author="Kevin Liu",
     description="A Python package for programming with Arduino.",
     long_description=open("README.rst").read(),

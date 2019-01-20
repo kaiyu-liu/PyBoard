@@ -15,17 +15,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-LCD1602       Arduino
-GND             GND
-VCC             5V
-SCL             A5
-SDA             A4
-
 '''
 
-from pyboard.pyboard import PyBoard
+from pyboard.board import PyBoard
 import datetime
 
+'''
+Wire up LCD1602 and Arduino as below:
+    LCD1602       Arduino
+    ---------------------
+    GND             GND
+    VCC             5V
+    SCL             A5
+    SDA             A4
+'''
 board = PyBoard()
 
 # Use default device address (0x3F). If it doesn't work, try

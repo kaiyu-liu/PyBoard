@@ -1,5 +1,5 @@
 """
- Copyright (c) 2018-2019 Kaiyu Liu,, All rights reserved.
+ Copyright (c) 2018-2019 Kaiyu Liu All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -13,19 +13,7 @@
  You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
  along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 """
-from pymata_aio.private_constants import PrivateConstants
-
-class BoardConstants(PrivateConstants):
-    NEOPIXEL_CONFIG = 0xA2
-    NEOPIXEL = 0xA0
-    LCD_CONFIG = 0xA4
-    LCD_PRINT = 0xA5
-    LCD_CLEAR = 0xA6
-    DHT11_READ = 0xA7
-    DHT11_DATA = 0xA8
-    PING_READ = 0xA9
-    PING_DATA = 0xAA
-
-    def __init__():
-	    PrivateConstants.__init__()
+print('__file__={0:<35} | __name__={1:<20} | __package__={2:<20}'.format(__file__,__name__,str(__package__)))
+import pyboard.pyboard_core.PyBoardCore

@@ -15,9 +15,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-import time
-from pyboard.pyboard import PyBoard
+'''
+from pyboard.board import PyBoard
 
 LED_PIN = 5
 board = PyBoard()
@@ -39,3 +38,23 @@ def ledBreath():
 
 while(True):
     ledBreath()
+'''
+#呼吸灯： LED连接在D5
+from pyboard.board import PyBoard
+
+led = 5
+board = PyBoard()
+
+board.pinMode(led, PyBoard.PWM)
+stay = 18
+
+while True:
+    for i in range(0, 256):
+        board.analogWrite(led, i)
+        board.delay(stay)
+
+    for i in range(0, 256):
+        board.analogWrite(led, 255-i)
+        board.delay(stay)
+ 
+    board.delay(500)

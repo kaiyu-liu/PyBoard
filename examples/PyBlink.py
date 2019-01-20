@@ -17,8 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import time
-from pyboard.pyboard import PyBoard
+from pyboard.board import PyBoard
 
+"""
+1. Wire up your Arduino board digital pin 5 to the longer leg of an LED;
+2. Connect a 330 ohm resistor to the shorter leg of the LED;
+3. Connect a jumper wire from GND to the other side of the resistor
+4. Connect your Arduino to a computer;
+5. Run this Python program and you should see the LED blinks.
+"""
 LED_PIN = 5
 board = PyBoard()
 

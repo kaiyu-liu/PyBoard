@@ -1,5 +1,5 @@
 """
- Copyright (c) 2018 Kaiyu Liu,, All rights reserved.
+ Copyright (c) 2018-2019 Kaiyu Liu,, All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -20,7 +20,7 @@ import asyncio
 from pymata_aio.constants import Constants
 
 try:
-    from .pyboard_core import PyBoardCore
+    from pyboard_core import PyBoardCore
 except ImportError:
     from .pyboard_core import PyBoardCore
 
@@ -35,7 +35,7 @@ class PyBoard(Constants):
     def __init__(self, com_port=None, arduino_wait=2, sleep_tune=0.0001, log_output=False, 
                  ip_address=None, ip_port=2000, ip_handshake='*HELLO*'):
         """
-        Constructor for the PyMata3 API
+        Constructor for the PyBoard API
         If log_output is set to True, a log file called 'pymata_log'
         will be created in the current directory and all pymata_aio output
         will be redirected to the log with no output appearing on the console.
@@ -498,6 +498,13 @@ class PyBoard(Constants):
         task = asyncio.ensure_future(self.core.play_tone(pin, tone_command,
                                                          frequency, duration))
         self.loop.run_until_complete(task)
+
+    def tone(self, pin, frequency, duration=None):
+        return playTone(self, pin, Constant.TONE_TONE, frequency, duration);
+
+    def noTone(self, pin):
+        return playTone(self, pin, Constant.TONE_NO_TONE, 0);
+
 
     def sendReset(self):
         """

@@ -1,5 +1,5 @@
 """
- Copyright (c) 2015-2018 Alan Yorinks All rights reserved.
+ Copyright (c) 2018-2019 Kaiyu Liu, All rights reserved.
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -15,6 +15,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 """
 
+
 # noinspection PyCompatibility
 import asyncio
 import glob
@@ -29,7 +30,11 @@ from pymata_aio.pin_data import PinData
 #from pymata_aio.private_constants import PrivateConstants
 from pymata_aio.pymata_serial import PymataSerial
 from pymata_aio.pymata_socket import PymataSocket
-from .pyboard_constants import BoardConstants
+try:
+    from pyboard_constants import BoardConstants
+except ImportError:
+    from .pyboard_constants import BoardConstants
+
 
 
 # noinspection PyCallingNonCallable,PyCallingNonCallable,PyPep8,PyBroadException,PyBroadException,PyCompatibility
@@ -157,7 +162,6 @@ class PyBoardCore(PymataCore):
         result = data[1]
         if(result > 128):
            result -= 255
-        reply_data = []
         dht_pin_entry = self.dht_map[pin_number]
         dht_pin_entry[0] = result
         dht_pin_entry[1] = data[2]
